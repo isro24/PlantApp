@@ -3,14 +3,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:plant_app/constant.dart';
 import 'package:plant_app/bloc/camera_bloc.dart';
-
-class HeaderWithSearchBox extends StatelessWidget {
+import 'package:plant_app/screens/map_page.dart';
+class HeaderWithSearchBox extends StatefulWidget {
   const HeaderWithSearchBox({
     super.key,
     required this.size,
   });
 
   final Size size;
+
+  @override
+  State<HeaderWithSearchBox> createState() => _HeaderWithSearchBoxState();
+}
+
+class _HeaderWithSearchBoxState extends State<HeaderWithSearchBox> {
+  String? selectedAddress;
 
   void _showImageSourceSheet(BuildContext context) {
     showModalBottomSheet(
@@ -42,6 +49,19 @@ class HeaderWithSearchBox extends StatelessWidget {
     );
   }
 
+  Future<void> _selectAddress() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const MapPage()),
+    );
+
+    if (result != null && result is String) {
+      setState(() {
+        selectedAddress = result;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CameraBloc, CameraState>(
@@ -56,7 +76,7 @@ class HeaderWithSearchBox extends StatelessWidget {
       builder: (context, state) {
         return Container(
           margin: EdgeInsets.only(bottom: kDefaultPadding * 2.5),
-          height: size.height * 0.2,
+          height: widget.size.height * 0.2,
           child: Stack(
             children: [
               Container(
@@ -65,7 +85,7 @@ class HeaderWithSearchBox extends StatelessWidget {
                   right: kDefaultPadding,
                   bottom: 36 + kDefaultPadding,
                 ),
-                height: size.height * 0.2 - 27,
+                height: widget.size.height * 0.2 - 27,
                 decoration: BoxDecoration(
                   color: kPrimaryColor,
                   borderRadius: BorderRadius.only(
@@ -75,14 +95,41 @@ class HeaderWithSearchBox extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Text(
-                      'Hi Isro!',
-                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: _selectAddress,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Hi Isro!',
+                              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                            Row(
+                              children: [
+                                const Icon(Icons.location_on, size: 16, color: Colors.white70),
+                                const SizedBox(width: 4),
+                                Flexible(
+                                  child: Text(
+                                    selectedAddress ?? 'Masukkan Alamat',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    Spacer(),
                     GestureDetector(
                       onTap: () => _showImageSourceSheet(context),
                       child: BlocBuilder<CameraBloc, CameraState>(
@@ -118,10 +165,10 @@ class HeaderWithSearchBox extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                    offset: Offset(0, 10),
-                        blurRadius: 50,
-                        color: kPrimaryColor.withAlpha(80)
-                      ),
+                          offset: Offset(0, 10),
+                          blurRadius: 50,
+                          color: kPrimaryColor.withAlpha(80)
+                        ),
                     ],
                   ),
                   child: Row(
@@ -133,9 +180,9 @@ class HeaderWithSearchBox extends StatelessWidget {
                             hintText: "Search",
                             hintStyle: TextStyle(
                           color: kPrimaryColor.withAlpha(80)
-                            ),
+                        ),
                             enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none
+                            focusedBorder: InputBorder.none
                           ),
                         ),
                       ),
