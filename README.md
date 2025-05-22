@@ -29,7 +29,7 @@ A new Flutter project.
       <td><img src="https://github.com/user-attachments/assets/0dd51017-1be4-4eeb-864b-9ff6a8d1526a" width ="250"/></td>
     </tr>
     <tr>
-      <td align = "center">Home Screen (Modal Camera dan Galeri)</td>
+      <td align = "center">Home Screen (Modal Camera dan Galeri dari Profil)</td>
       <td><img src="https://github.com/user-attachments/assets/ad076059-2dbe-4fb9-a2ec-f958bcc258e8" width ="250"/></td>
     </tr>
     <tr>
